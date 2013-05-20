@@ -1,0 +1,39 @@
+#! /bin/bash
+
+case "$1" in
+    '' | -h | --help)
+        NOARGS=1 ;;
+    -d)
+        DRY=1; FIND=$2 ;;
+    *)
+        DRY=0; FIND=$1 ;;
+esac
+
+if [[ $NOARGS -eq "1" ||  -z $FIND ]]
+then
+  echo '
+usage: grepkill (-d for dry run) [thing_to_find_and_kill]'
+  exit 0
+fi
+
+COMMAND="ps -eo pid,args | grep -v grep | grep $FIND"
+
+echo "
+KILLING:
+"
+echo $COMMAND | sh
+echo "
+"
+
+PIDS=$(echo $COMMAND | sh | awk '{ print $1 }')
+
+echo kill -9 $PIDS
+
+if [ $DRY -eq "0" ]
+then
+    echo kill -9 $PIDS | sh
+else
+    echo 'dry run, nothing killed'
+fi
+
+exit 0
