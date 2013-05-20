@@ -1,0 +1,6 @@
+#! env bash
+
+dir=${1-"."}
+number=${2-"10"}
+
+find $dir -type f -print0 | xargs -0 du -s | sort -n | tail -$number | cut -f2 | xargs -I{} du -sh {} | sort -nr
