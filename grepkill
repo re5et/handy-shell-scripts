@@ -33,13 +33,15 @@ echo $COMMAND | sh
 echo "
 "
 
+KILLCOMMAND="kill -9 $PIDS"
 
-echo kill -9 $PIDS
+echo will: $KILLCOMMAND
 
 if [ $DRY -eq "0" ]
 then
-    echo kill -9 $PIDS | sh
+    echo $KILLCOMMAND | sh
 else
+    echo
     echo 'dry run, nothing killed'
 fi
 
