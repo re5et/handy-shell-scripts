@@ -1,0 +1,28 @@
+#! /usr/bin/env bash
+
+# Uses nmap to perform a simple scan of a host
+# for port status
+
+type nmap >/dev/null 2>&1 || {
+    echo >&2 "
+this requires nmap, but it's not available."
+    exit 1;
+}
+
+EXPECTED_ARGS=1
+if [ $# -ne $EXPECTED_ARGS ]
+then
+  echo "
+Usage: `basename $0` {host, ports(single, comma separated, range)}
+
+ports defaults to range 1-1024"
+  exit $E_BADARGS
+fi
+
+host=$1
+ports=${2-1-1024}
+
+echo "
+Scanning $host, ports: $ports"
+
+nmap -PNF $host -p $ports
