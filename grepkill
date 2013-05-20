@@ -18,6 +18,14 @@ fi
 
 COMMAND="ps -eo pid,args | grep -v grep | grep $FIND"
 
+PIDS=$(echo $COMMAND | sh | awk '{ print $1 }')
+
+if [[ -z $PIDS ]]; then
+    echo
+    echo did not find anything to kill, bailing.
+    exit 1
+fi
+
 echo "
 KILLING:
 "
@@ -25,7 +33,6 @@ echo $COMMAND | sh
 echo "
 "
 
-PIDS=$(echo $COMMAND | sh | awk '{ print $1 }')
 
 echo kill -9 $PIDS
 
