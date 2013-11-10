@@ -1,0 +1,25 @@
+#!/bin/bash
+
+default_remote_host=ch.root.sx
+default_remote_path=backups
+
+remote_host=${1:-$default_remote_host}
+remote_path=${2:-$default_remote_path}
+
+cd /tmp
+rm -rf backup-restore
+mkdir backup-restore
+cd backup-restore
+mkdir extracted-backup
+
+latest_backup_find_command="ls -t $remote_path | head -n1"
+
+filename=`ssh $remote_host "$latest_backup_find_command"`
+
+scp $remote_host:$remote_path/$filename backup-restore.tar.gpg
+cat ~/.ssh/id_rsa | gpg --passphrase-fd 0 backup-restore.tar.gpg
+
+cd extracted-backup
+tar xf ../backup-restore.tar
+
+echo extracted backup to /tmp/backup-restore/extracted-backup

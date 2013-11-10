@@ -1,0 +1,28 @@
+#!/bin/bash
+
+default_remote_host=ch.root.sx
+default_remote_path=backups
+default_backup_manifest=~/.backup_manifest
+
+remote_host=${1:-$default_remote_host}
+remote_backup_path=${2:-$default_remote_path}
+backup_manifest=${3:-$default_backup_manifest}
+
+backups_to_keep=10
+
+paths_to_backup=($(cat $backup_manifest))
+
+function remote_command {
+    ssh ${remote_host} ${1}
+}
+
+time=$(date +%Y.%m.%d.%H.%M.%S)
+
+cd /tmp
+tar -cf backup-${time}.tar ${paths_to_backup[*]}
+cat ~/.ssh/id_rsa | gpg --passphrase-fd 0 -c backup-${time}.tar
+remote_command "mkdir -p $remote_backup_path"
+scp backup-${time}.tar.gpg $remote_host:$remote_backup_path
+rm backup-${time}.tar*
+remote_command "cd $remote_backup_path; rm \`ls -t | awk 'NR>${backups_to_keep}'\`"
+cd -
