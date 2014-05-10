@@ -1,0 +1,6 @@
+#! /usr/bin/env bash
+
+from=$1
+to=$2
+
+rsync -ravz --human-readable --progress $from $to

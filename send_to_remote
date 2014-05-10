@@ -1,0 +1,17 @@
+#! env bash
+
+local_path=$1
+remote_host=$2
+remote_path=$3
+
+for file in $local_path; do
+    basename=$(basename $file)
+    ssh $remote_host "ls $remote_path/$basename"
+    if [ $? -eq 0 ]; then
+       echo $basename is on the server, removing locally
+       rm $file
+    else
+       echo $basename is not on the server, sending
+       scp $file $remote_host:$remote_path
+    fi
+done
