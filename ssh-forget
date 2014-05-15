@@ -1,0 +1,21 @@
+#! env bash
+
+hostname=$1
+
+ip=$(host $1 | cut -f 4 -d" ")
+
+echo found ip of $ip for $1
+
+function forget_about {
+    cmd="fgrep '$1' $HOME/.ssh/known_hosts"
+    if [[ -z "$($cmd)" ]]; then
+        echo I know the host: $1
+        echo forgetting $1
+        ssh-keygen -R $1
+    else
+        echo I do not know about the host: $1
+    fi
+}
+
+forget_about $hostname
+forget_about $ip
