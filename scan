@@ -9,21 +9,26 @@ this requires nmap, but it's not available."
     exit 1;
 }
 
-EXPECTED_ARGS=1
-if [ $# -ne $EXPECTED_ARGS ]
-then
-  echo "
-Usage: `basename $0` {host, ports(single, comma separated, range)}
+function usage {
+    echo
+    echo "Usage: `basename $0` {host, ports(single, comma separated, range)}"
+    echo
+    echo "ports defaults to range 1-1024"
+}
 
-ports defaults to range 1-1024"
-  exit $E_BADARGS
+if [ -z "$1" ]; then
+    usage
+    exit 1
 fi
 
 host=$1
-ports=${2-1-1024}
 
-echo "
-Scanning $host, ports: $ports"
+if [ -n "$2" ]; then
+    ports=$2
+else
+    ports="1-1024"
+    echo defaulting ports to $ports
+fi
 
 cmd="nmap -PNF $host -p $ports"
 echo $cmd
