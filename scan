@@ -9,7 +9,7 @@ this requires nmap, but it's not available."
     exit 1;
 }
 
-EXPECTED_ARGS=2
+EXPECTED_ARGS=1
 if [ $# -ne $EXPECTED_ARGS ]
 then
   echo "
