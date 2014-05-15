@@ -9,7 +9,7 @@ this requires nmap, but it's not available."
     exit 1;
 }
 
-EXPECTED_ARGS=1
+EXPECTED_ARGS=2
 if [ $# -ne $EXPECTED_ARGS ]
 then
   echo "
@@ -25,4 +25,6 @@ ports=${2-1-1024}
 echo "
 Scanning $host, ports: $ports"
 
-nmap -PNF $host -p $ports
+cmd="nmap -PNF $host -p $ports"
+echo $cmd
+echo $cmd | sh
