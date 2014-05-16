@@ -2,20 +2,51 @@
 
 hostname=$1
 
-ip=$(host $1 | cut -f 4 -d" ")
-
-echo found ip of $ip for $1
+if [ -z "$hostname" ]
+then
+    echo pass in a hostname
+    exit 1
+fi
 
 function forget_about {
-    cmd="fgrep '$1' $HOME/.ssh/known_hosts"
-    if [[ -z "$($cmd)" ]]; then
-        echo I know the host: $1
+    if [ -z "$1" ]
+    then
+        return
+    fi
+    found=`fgrep $1 $HOME/.ssh/known_hosts`
+    if [ -n "$found" ]
+    then
+        echo found entry for: $1
         echo forgetting $1
         ssh-keygen -R $1
     else
-        echo I do not know about the host: $1
+        echo Did not find entry for: $1, not doing anything.
     fi
 }
 
-forget_about $hostname
-forget_about $ip
+host_output=$(host $1)
+
+if [ $? -ne 0 ]
+then
+    echo could not resolve the host.
+    exit 1
+else
+    ip=$(echo $host_output | awk 'NF>1{print $NF}')
+fi
+
+echo will remove host: $hostname
+
+if [[ -n "$ip" ]]; then
+    echo will remove ip: $ip
+fi
+
+read -p "remove? " -n 1 -r
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    echo
+    forget_about $hostname
+    forget_about $ip
+else
+    echo
+    echo fine.
+fi
