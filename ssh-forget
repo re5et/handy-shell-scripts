@@ -31,14 +31,17 @@ then
     echo could not resolve the host.
     exit 1
 else
+    echo $host_output
     ip=$(echo $host_output | awk 'NF>1{print $NF}')
+    if [[ -z "$ip" ]];
+    then
+        echo could not find ip address for host, output of host call: \"$host_output\"
+        exit 1
+    fi
 fi
 
 echo will remove host: $hostname
-
-if [[ -n "$ip" ]]; then
-    echo will remove ip: $ip
-fi
+echo will remove ip: $ip
 
 read -p "remove? " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]
