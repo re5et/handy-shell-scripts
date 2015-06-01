@@ -1,0 +1,34 @@
+#! env bash
+
+while getopts "p:" opt; do
+    case "$opt" in
+        p)
+            PLAY=1
+            shift
+            ;;
+    esac
+done
+
+function strjoin () (IFS="|"; echo "$*"; shift;);
+
+highlight=$(strjoin $*)
+highlight="($highlight)"
+
+movies=$(find /movies1/ /movies2/ /other/downloads/ -maxdepth 1)
+
+output="$movies"
+
+while (( "$#" )); do
+
+    output=`echo "$output" | fgrep -i $1`
+
+    shift
+
+done
+
+echo "$output" | grep --color -iE "$highlight"
+
+if [ "$PLAY" ]; then
+    echo "$output" > /tmp/fm
+    mplayer -playlist /tmp/fm -quiet
+fi
