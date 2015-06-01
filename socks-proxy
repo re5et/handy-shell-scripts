@@ -1,0 +1,8 @@
+#! /bin/bash
+
+while true; do
+    echo "connecting..."
+    ssh -D 5454 re5et@eurybia.feralhosting.com
+    echo "restarting in 1 seconds.."
+    sleep 1
+done

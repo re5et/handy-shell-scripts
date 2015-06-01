@@ -3,6 +3,8 @@
 case "$1" in
     '' | -h | --help)
         NOARGS=1 ;;
+    -y)
+        YES=1 ;;
     -d)
         DRY=1; FIND=$2 ;;
     *)
@@ -34,18 +36,23 @@ echo
 echo will: $KILLCOMMAND
 echo
 
-if [ $DRY -eq "1" ]
+if [ "$DRY" == "1" ]
 then
     echo
     echo 'dry run, nothing killed'
     exit 0
 fi
 
-read -p "Are you sure? [y/N]: " -n 1 -r
-echo
-if [ $REPLY == "y" ]
+if [ "$YES" = "1" ]
 then
     echo $KILLCOMMAND | sh
+else
+    read -p "Are you sure? [y/N]: " -n 1 -r
+    echo
+    if [ "$RUN" == "y" ]
+    then
+        echo $KILLCOMMAND | sh
+    fi
 fi
 
 exit 0

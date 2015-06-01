@@ -1,0 +1,5 @@
+#! /bin/bash
+
+logger "bouncing synergy"
+killall synergys
+synergys -c ~/.synergy.conf > /dev/null

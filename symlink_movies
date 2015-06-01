@@ -1,0 +1,5 @@
+#! /bin/bash
+
+cd /media/movies
+ln -s ../movies1/* ./ &> /dev/null
+ln -s ../movies2/* ./ &> /dev/null

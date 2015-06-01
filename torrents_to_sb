@@ -1,0 +1,28 @@
+#! /bin/bash
+
+pattern=/home/atom/*torrent
+
+function my_logger {
+    logger -t "torrents_to_sb" $1;
+}
+
+if ls $pattern 1> /dev/null 2>&1; then
+    for file in /home/atom/*torrent; do
+        my_logger "processing $file"
+        scp "$file" sb:private/rtorrent/watch 1> /tmp/scp-result 2>&1
+        rc=$?; if [[ $rc != 0 ]]; then
+            cat /tmp/scp-result | my_logger
+            my_logger "scp failed for $file : $rc"
+        else
+            rm "$file"
+            rc=$?; if [[ $rc != 0 ]]; then
+                my_logger "rm failed for $file : $rc";
+            else
+                my_logger "$file uploaded and removed successfully";
+            fi
+        fi
+    done
+else
+    my_logger "nothing to do"
+    exit 0
+fi
