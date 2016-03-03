@@ -1,0 +1,3 @@
+#! /usr/bin/env bash
+
+rsync --rsh="ssh" -ravz --human-readable --progress --chmod=755 sb:d/ /other/downloads
