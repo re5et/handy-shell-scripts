@@ -1,8 +1,10 @@
 #! /bin/bash
 
+. ~/.local_exports
+
 while true; do
     echo "connecting..."
-    ssh -D 5454 re5et@eurybia.feralhosting.com
+    ssh -D $SOCKS_PROXY_PORT $SOCKS_PROXY_HOSTNAME
     echo "restarting in 1 seconds.."
     sleep 1
 done
