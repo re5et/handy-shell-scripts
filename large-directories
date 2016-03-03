@@ -1,0 +1,5 @@
+#! /bin/bash
+
+DIR=${1:-.}
+NUM=${2:-10}
+du -a $DIR | sort -n -r | head -n $NUM
