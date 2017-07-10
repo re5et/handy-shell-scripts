@@ -1,0 +1,4 @@
+#! /bin/bash
+
+clone $DOT_FILE_REPO ~/.dotfiles
+ln -sf ~/.dotfiles/* ~/
