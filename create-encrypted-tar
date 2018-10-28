@@ -1,0 +1,3 @@
+#! /bin/bash
+
+tar czvpf - "$1" | gpg --symmetric --cipher-algo aes256 -o "$2.tar.gz.gpg"
