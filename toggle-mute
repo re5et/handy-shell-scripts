@@ -1,0 +1,32 @@
+#! /bin/bash
+
+# PipeWire port of the old pacmd version, same semantics:
+# anything live -> mute EVERY mic; all muted -> unmute ONLY the preferred mic.
+
+preferred="Blue Snowball"
+
+# Audio-section Sources block only (Video section has a Sources block too)
+block=$(wpctl status | awk '/^Audio/{a=1} /^Video/{a=0} !a{next} /├─ Sources:/{f=1;next} /├─|└─/{f=0} f')
+
+node_id() { # first standalone "NN." token on a line is the node id
+  awk '{for(i=1;i<=NF;i++) if($i ~ /^[0-9]+\.$/){sub(/\./,"",$i); print $i; exit}}'
+}
+
+ids=$(echo "$block" | while IFS= read -r line; do echo "$line" | node_id; done)
+unmuted=$(echo "$block" | grep -E '[0-9]+\. ' | grep -v 'MUTED')
+
+if [ -n "$unmuted" ]; then
+  for id in $ids; do
+    wpctl set-mute "$id" 1
+  done
+  echo "mute: muted"
+else
+  pref_id=$(echo "$block" | grep -i "$preferred" | node_id)
+  if [ -n "$pref_id" ]; then
+    wpctl set-mute "$pref_id" 0
+    echo "mute: UNMUTED!!!"
+  else
+    echo "mute: '$preferred' not found; all mics stay muted"
+    exit 1
+  fi
+fi

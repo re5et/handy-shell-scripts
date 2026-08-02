@@ -1,10 +1,8 @@
 #! /bin/bash
 
 . ~/.local_exports
-ssh -D $SOCKS_PROXY_PORT $SOCKS_PROXY_HOSTNAME
-
-# while true; do
-#     echo "connecting..."
-#     echo "restarting in 1 seconds.."
-#     sleep 1
-# done
+exec ssh -N -T \
+    -o ServerAliveInterval=30 \
+    -o ServerAliveCountMax=3 \
+    -o ExitOnForwardFailure=yes \
+    -D "$SOCKS_PROXY_PORT" "$SOCKS_PROXY_HOSTNAME"
